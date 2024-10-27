@@ -1,6 +1,5 @@
 export const rateLimit = ({
     interval = 60 * 1000, // 1 minute
-    uniqueTokenPerInterval = 500,
   } = {}) => {
     const tokenCache = new Map();
   

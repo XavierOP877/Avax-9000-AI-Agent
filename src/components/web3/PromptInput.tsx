@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { ethers } from "ethers";
 import axios from "axios";
-import { Footer } from "../layout/Footer";
 import { Header } from "../layout/Header";
 // Constants for API endpoints and contract addresses
 const EXAMPLE_PROMPTS = [
@@ -24,21 +23,6 @@ interface SwapParams {
   path: string[];
   to: string;
   deadline: bigint;
-}
-
-interface TokenBalance {
-  symbol: string;
-  balance: string;
-  usdValue?: string;
-}
-
-interface TransactionInfo {
-  hash: string;
-  type: string;
-  amount: string;
-  token: string;
-  timestamp: string;
-  status: string;
 }
 
 export const PromptInput: React.FC = () => {
@@ -63,7 +47,6 @@ export const PromptInput: React.FC = () => {
         throw new Error("Invalid private key length");
       }
       const formattedKey = `0x${cleanKey}`;
-
       if (!process.env.NEXT_PUBLIC_AVALANCHE_RPC_URL) {
         throw new Error("RPC URL not configured");
       }
@@ -160,7 +143,7 @@ export const PromptInput: React.FC = () => {
         const tokenTxs = tokenResponse.data.result.map((tx: any) => ({
           ...tx,
           type: "Token Transfer",
-          token: "USDC",
+          token: "USDC"
         }));
         transactions = [...transactions, ...tokenTxs]
           .sort((a, b) => parseInt(b.timeStamp) - parseInt(a.timeStamp))
