@@ -297,7 +297,7 @@ export const PromptInput: React.FC = () => {
           /transfer ([\d.]+) avax to (0x[a-fA-F0-9]{40})/i
         );
         if (match) {
-          const [_, amount, toAddress] = match;
+          const [, amount, toAddress] = match;
           const transaction = {
             to: toAddress,
             value: ethers.parseEther(amount),
@@ -327,7 +327,7 @@ export const PromptInput: React.FC = () => {
       else if (prompt.toLowerCase().includes("swap")) {
         const match = prompt.match(/swap ([\d.]+) avax/i);
         if (match) {
-          const [_, amount] = match;
+          const [, amount] = match;
           const amountIn = ethers.parseEther(amount);
           const amountOutMin = await getAmountOutMin(amountIn, [
             WAVAX_ADDRESS,
