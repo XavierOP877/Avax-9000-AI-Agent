@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 // Types for Brian API requests and responses
 interface BrianTransactionStep {
@@ -30,6 +30,14 @@ interface BrianTransactionResponse {
     name: string;
     key: string;
   };
+}
+
+interface ErrorResponseData {
+  error?: {
+    message?: string;
+    issues?: unknown[];
+  };
+  message?: string;
 }
 
 export default async function handler(
@@ -97,7 +105,7 @@ export default async function handler(
 
     console.log('Sending transaction request:', transactionRequest);
 
-    const transactionResponse = await axios.post(
+    const transactionResponse = await axios.post<{ result: BrianTransactionResponse | BrianTransactionResponse[] }>(
       'https://api.brianknows.org/api/v0/agent/transaction',
       transactionRequest,
       {
@@ -139,10 +147,10 @@ export default async function handler(
         return {
           description: tx.description || `${transactionType} transaction`,
           steps: [{
-            to: tx.steps?.[0].to || '',
-            data: tx.steps?.[0].data || '0x',
-            value: tx.steps?.[0].value || '0',
-            gasLimit: tx.steps?.[0].gasLimit || '300000'
+            to: tx.steps?.[0]?.to || '',
+            data: tx.steps?.[0]?.data || '0x',
+            value: tx.steps?.[0]?.value || '0',
+            gasLimit: tx.steps?.[0]?.gasLimit || '300000'
           }],
           fromToken: tx.fromToken,
           toToken: tx.toToken,
@@ -161,41 +169,42 @@ export default async function handler(
     // If no result, return the raw response
     return res.status(200).json(transactionResponse.data);
 
-  } catch (error: any) {
-    console.error('API Error:', error.response?.data || error);
+  } catch (error) {
+    console.error('API Error:', (error as AxiosError<ErrorResponseData>).response?.data || error);
 
     // Log validation issues if present
-    if (error.response?.data?.error?.issues) {
-      console.log('Validation Issues:', JSON.stringify(error.response.data.error.issues, null, 2));
+    const axiosError = error as AxiosError<ErrorResponseData>;
+    if (axiosError.response?.data?.error?.issues) {
+      console.log('Validation Issues:', JSON.stringify(axiosError.response.data.error.issues, null, 2));
     }
 
     // Handle different types of errors
-    if (error.response?.status === 400) {
+    if (axiosError.response?.status === 400) {
       return res.status(400).json({
         error: 'Invalid request format',
-        details: error.response.data?.error
+        details: axiosError.response.data?.error
       });
     }
 
-    if (error.response?.status === 401) {
+    if (axiosError.response?.status === 401) {
       return res.status(401).json({
         error: 'Invalid API key or unauthorized'
       });
     }
 
-    if (error.response?.status === 429) {
+    if (axiosError.response?.status === 429) {
       return res.status(429).json({
         error: 'Rate limit exceeded. Please try again later.'
       });
     }
 
     // Default error response
-    return res.status(error.response?.status || 500).json({
-      error: error.response?.data?.error?.message || 
-             error.response?.data?.message ||
-             error.message ||
+    return res.status(axiosError.response?.status || 500).json({
+      error: axiosError.response?.data?.error?.message || 
+             axiosError.response?.data?.message ||
+             (error as Error).message ||
              'Failed to process request',
-      details: error.response?.data
+      details: axiosError.response?.data
     });
   }
 }

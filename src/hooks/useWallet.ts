@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
 import { WalletState } from '@/types/web3';
 import { toast } from 'react-hot-toast';
@@ -47,7 +47,7 @@ export const useWallet = () => {
     toast.success('Wallet disconnected');
   };
 
-  const updateBalance = async () => {
+  const updateBalance = useCallback(async () => {
     if (walletState.wallet?.provider && walletState.connected) {
       const balance = await walletState.wallet.provider.getBalance(walletState.address);
       setWalletState(prev => ({
@@ -55,11 +55,12 @@ export const useWallet = () => {
         balance: ethers.formatEther(balance),
       }));
     }
-  };
+  }, [walletState.wallet, walletState.connected, walletState.address]);
+
   useEffect(() => {
     const interval = setInterval(updateBalance, 30000); 
     return () => clearInterval(interval);
-  }, [walletState.connected]);
+  }, [updateBalance]);
 
   return {
     ...walletState,
