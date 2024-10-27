@@ -25,13 +25,35 @@ interface SwapParams {
   deadline: bigint;
 }
 
+interface Transaction {
+  timeStamp: string;
+  type: string;
+  value: string;
+  from: string;
+  to: string;
+  isError: string;
+  gasUsed: string;
+  hash: string;
+  token: string;
+}
+
+interface HistoryItem {
+  type: 'info' | 'transfer' | 'swap';
+  description: string;
+  timestamp: string;
+  hash?: string;
+  result?: string;
+  status?: 'success' | 'failure';
+  error?: string;
+}
+
 export const PromptInput: React.FC = () => {
   const [prompt, setPrompt] = useState("");
   const [privateKey, setPrivateKey] = useState("");
   const [wallet, setWallet] = useState<ethers.Wallet | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [history, setHistory] = useState<any[]>([]);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [showExamples, setShowExamples] = useState(true);
 
   const handlePromptSelect = (example: string) => {
@@ -55,7 +77,6 @@ export const PromptInput: React.FC = () => {
         process.env.NEXT_PUBLIC_AVALANCHE_RPC_URL
       );
       const newWallet = new ethers.Wallet(formattedKey, provider);
-      const address = await newWallet.getAddress();
 
       setWallet(newWallet);
       setIsConnected(true);
@@ -95,7 +116,7 @@ export const PromptInput: React.FC = () => {
     wallet: ethers.Wallet
   ): Promise<string> => {
     if (!wallet.provider) throw new Error("Provider not connected");
-
+  
     try {
       const [txResponse, tokenResponse] = await Promise.all([
         axios.get(ROUTESCAN_API_URL, {
@@ -122,25 +143,19 @@ export const PromptInput: React.FC = () => {
           },
         }),
       ]);
-
-      let transactions = [];
-
+  
+      let transactions: Transaction[] = [];
+  
       if (txResponse.data.result && Array.isArray(txResponse.data.result)) {
-        transactions = txResponse.data.result.map((tx: any) => ({
+        transactions = txResponse.data.result.map((tx: Transaction) => ({
           ...tx,
-          type:
-            tx.to?.toLowerCase() === TRADERJOE_ROUTER.toLowerCase()
-              ? "Swap"
-              : "Transfer",
+          type: tx.to?.toLowerCase() === TRADERJOE_ROUTER.toLowerCase() ? "Swap" : "Transfer",
           token: "AVAX",
         }));
       }
-
-      if (
-        tokenResponse.data.result &&
-        Array.isArray(tokenResponse.data.result)
-      ) {
-        const tokenTxs = tokenResponse.data.result.map((tx: any) => ({
+  
+      if (tokenResponse.data.result && Array.isArray(tokenResponse.data.result)) {
+        const tokenTxs = tokenResponse.data.result.map((tx: Transaction) => ({
           ...tx,
           type: "Token Transfer",
           token: "USDC"
@@ -149,44 +164,32 @@ export const PromptInput: React.FC = () => {
           .sort((a, b) => parseInt(b.timeStamp) - parseInt(a.timeStamp))
           .slice(0, 10);
       }
-
+  
       if (transactions.length === 0) {
         return "No recent transactions found";
       }
-
+  
       return transactions
-        .map(
-          (tx: {
-            timeStamp: string;
-            type: string;
-            value: string;
-            from: string;
-            to: string;
-            isError: string;
-            gasUsed: string;
-            hash: string;
-            token: string;
-          }) => {
-            const timestamp = new Date(
-              parseInt(tx.timeStamp) * 1000
-            ).toLocaleString();
-            const value =
-              tx.token === "AVAX"
-                ? `${ethers.formatEther(tx.value)} AVAX`
-                : `${ethers.formatUnits(tx.value, 6)} USDC`;
-
-            return (
-              `${timestamp}\n` +
-              `Type: ${tx.type}\n` +
-              `Amount: ${value}\n` +
-              `From: ${tx.from}\n` +
-              `To: ${tx.to || "Contract Creation"}\n` +
-              `Status: ${tx.isError === "0" ? "Success" : "Failed"}\n` +
-              `Gas Used: ${ethers.formatEther(tx.gasUsed || "0")} AVAX\n` +
-              `Hash: ${tx.hash}\n`
-            );
-          }
-        )
+        .map((tx: Transaction) => {
+          const timestamp = new Date(
+            parseInt(tx.timeStamp) * 1000
+          ).toLocaleString();
+          const value =
+            tx.token === "AVAX"
+              ? `${ethers.formatEther(tx.value)} AVAX`
+              : `${ethers.formatUnits(tx.value, 6)} USDC`;
+  
+          return (
+            `${timestamp}\n` +
+            `Type: ${tx.type}\n` +
+            `Amount: ${value}\n` +
+            `From: ${tx.from}\n` +
+            `To: ${tx.to || "Contract Creation"}\n` +
+            `Status: ${tx.isError === "0" ? "Success" : "Failed"}\n` +
+            `Gas Used: ${ethers.formatEther(tx.gasUsed || "0")} AVAX\n` +
+            `Hash: ${tx.hash}\n`
+          );
+        })
         .join("\n-------------------\n");
     } catch (error) {
       console.error("Error fetching transaction history:", error);
@@ -294,7 +297,7 @@ export const PromptInput: React.FC = () => {
           /transfer ([\d.]+) avax to (0x[a-fA-F0-9]{40})/i
         );
         if (match) {
-          const [_, amount, toAddress] = match;
+          const [fullMatch, amount, toAddress] = match;
           const transaction = {
             to: toAddress,
             value: ethers.parseEther(amount),
