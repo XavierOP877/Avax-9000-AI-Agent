@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { ethers } from "ethers";
 import axios from "axios";
-
-
+import { Footer } from "../layout/Footer";
+import { Header } from "../layout/Header";
 // Constants for API endpoints and contract addresses
 const EXAMPLE_PROMPTS = [
   "Transfer 0.1 AVAX to 0x...",
@@ -48,6 +48,12 @@ export const PromptInput: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
+  const [showExamples, setShowExamples] = useState(true);
+
+  const handlePromptSelect = (example: string) => {
+    setPrompt(example);
+    setShowExamples(false);
+  };
 
   // Function to connect wallet using private key
   const connectWallet = async (key: string) => {
@@ -393,173 +399,174 @@ export const PromptInput: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-8 animate-fadeIn">
+    <div className="max-w-4xl mx-auto p-4 space-y-8 animate-fadeIn min-h-screen flex flex-col pt-24">
       {/* Header Card */}
-      <div className="bg-white rounded-2xl p-8 shadow-xl transition-all hover:shadow-2xl">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
-            9000 Bounty
-          </h1>
-          {isConnected && (
-            <button
-              onClick={() => {
-                setWallet(null);
-                setIsConnected(false);
-                toast.success("Wallet disconnected");
-              }}
-              className="px-6 py-2 bg-red-500 text-white rounded-lg
-                       hover:bg-red-600 transition-all duration-300
-                       transform hover:scale-105 active:scale-95"
-            >
-              Disconnect
-            </button>
+      <Header 
+  isConnected={isConnected} 
+  onDisconnect={() => {
+    setWallet(null);
+    setIsConnected(false);
+    setHistory([]);
+    toast.success("Wallet disconnected");
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  }}
+/>
+  
+      {/* Content wrapper with overflow-scroll */}
+      <div className="flex-grow overflow-y-auto pb-32 mt-2">
+        {/* Transaction History - Moved above the input section */}
+        {history.length > 0 && (
+          <div className="bg-white rounded-2xl p-8 shadow-xl max-h-96 overflow-y-auto mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Results</h2>
+            <div className="flex flex-col space-y-reverse space-y-4">
+              {history.map((item, index) => (
+                <div
+                  key={index}
+                  className={`p-6 rounded-xl transition-all duration-300 hover:shadow-md ${
+                    item.type === "info"
+                      ? "bg-blue-50 hover:bg-blue-100"
+                      : item.status === "success"
+                      ? "bg-green-50 hover:bg-green-100"
+                      : "bg-red-50 hover:bg-red-100"
+                  }`}
+                >
+                  <p className="font-medium text-gray-800">{item.description}</p>
+                  {item.hash && (
+                    <a
+                      href={`https://testnet.snowtrace.io/tx/${item.hash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-1 text-blue-500 hover:text-blue-700 mt-2 transition-colors duration-300"
+                    >
+                      <span>View on Explorer</span>
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        />
+                      </svg>
+                    </a>
+                  )}
+                  {item.result && (
+                    <p className="mt-2 text-gray-600 font-mono text-sm whitespace-pre-wrap">
+                      {item.result}
+                    </p>
+                  )}
+                  {item.error && <p className="mt-2 text-red-600">{item.error}</p>}
+                  <p className="text-xs text-gray-500 mt-2">
+                    {new Date(item.timestamp).toLocaleString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+  
+        {/* Input Section */}
+        <div className="fixed bottom-0 left-0 right-0 mb-16">
+      <div className={`mx-auto px-4 transition-all duration-300 ${showExamples ? 'max-w-4xl' : 'max-w-2xl'}`}>
+        <div className="bg-gray-50 rounded-2xl p-6 shadow-md space-y-6">
+          {!isConnected ? (
+            <div className="space-y-6 animate-slideUp">
+              <h2 className="text-2xl font-semibold text-gray-800">Connect Wallet</h2>
+              <input
+                type="password"
+                placeholder="Enter your private key"
+                value={privateKey}
+                onChange={(e) => setPrivateKey(e.target.value)}
+                className="w-full p-4 border border-gray-300 rounded-lg text-gray-800 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+              />
+              <button
+                onClick={() => connectWallet(privateKey)}
+                className="w-full bg-blue-500 text-white py-4 px-6 rounded-lg hover:bg-blue-600 active:bg-blue-700 transition-all duration-300 transform hover:scale-105 active:scale-95 font-medium text-lg"
+              >
+                Connect Wallet
+              </button>
+            </div>
+          ) : (
+            <div className="animate-slideUp">
+              <div className="flex items-center space-x-4">
+                <input
+                  value={prompt}
+                  onChange={(e) => {
+                    setPrompt(e.target.value);
+                    if (e.target.value === '') {
+                      setShowExamples(true);
+                    }
+                  }}
+                  placeholder="Enter your prompt..."
+                  className="flex-1 p-4 border border-gray-300 rounded-full text-gray-800 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  disabled={isProcessing}
+                />
+                <button
+                  onClick={handleExecute}
+                  disabled={isProcessing}
+                  className={`p-4 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 ${
+                    isProcessing 
+                      ? "bg-gray-400 cursor-not-allowed" 
+                      : "bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white"
+                  }`}
+                >
+                  {isProcessing ? (
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white" />
+                  ) : (
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      width="24" 
+                      height="24" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    >
+                      <path d="m12 19V5" />
+                      <path d="m5 12 7-7 7 7" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+
+              {showExamples && (
+                <div className="mt-4 animate-fadeIn">
+                  <p className="text-sm font-medium text-gray-600 mb-2">Example prompts:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {EXAMPLE_PROMPTS.map((example, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handlePromptSelect(example)}
+                        className="text-left text-blue-500 hover:text-blue-700 px-3 py-1 rounded-full text-sm hover:bg-blue-50 transition-all duration-300 border border-blue-200"
+                      >
+                        {example}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
-  
-      {/* Transaction History - Moved above the input section */}
-      {history.length > 0 && (
-        <div className="bg-white rounded-2xl p-8 shadow-xl">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Results</h2>
-          <div className="flex flex-col-reverse space-y-reverse space-y-4">
-            {history.map((item, index) => (
-              <div
-                key={index}
-                className={`p-6 rounded-xl transition-all duration-300 hover:shadow-md
-                        ${
-                          item.type === "info"
-                            ? "bg-blue-50 hover:bg-blue-100"
-                            : item.status === "success"
-                            ? "bg-green-50 hover:bg-green-100"
-                            : "bg-red-50 hover:bg-red-100"
-                        }`}
-              >
-                <p className="font-medium text-gray-800">{item.description}</p>
-                {item.hash && (
-                  <a
-                    href={`https://testnet.snowtrace.io/tx/${item.hash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-1 text-blue-500 hover:text-blue-700
-                           mt-2 transition-colors duration-300"
-                  >
-                    <span>View on Explorer</span>
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                      />
-                    </svg>
-                  </a>
-                )}
-                {item.result && (
-                  <p className="mt-2 text-gray-600 font-mono text-sm whitespace-pre-wrap">
-                    {item.result}
-                  </p>
-                )}
-                {item.error && <p className="mt-2 text-red-600">{item.error}</p>}
-                <p className="text-xs text-gray-500 mt-2">
-                  {new Date(item.timestamp).toLocaleString()}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-  
-      {/* Input Section */}
-      <div className="bg-white rounded-2xl p-8 shadow-xl transition-all hover:shadow-2xl">
-        {!isConnected ? (
-          <div className="space-y-6 animate-slideUp">
-            <h2 className="text-2xl font-semibold text-gray-800">Connect Wallet</h2>
-            <input
-              type="password"
-              placeholder="Enter your private key"
-              value={privateKey}
-              onChange={(e) => setPrivateKey(e.target.value)}
-              className="w-full p-4 border border-gray-300 rounded-xl
-                     text-gray-800 bg-white
-                     focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                     transition-all duration-300"
-            />
-            <button
-              onClick={() => connectWallet(privateKey)}
-              className="w-full bg-blue-500 text-white py-4 px-6 rounded-xl
-                     hover:bg-blue-600 active:bg-blue-700 
-                     transition-all duration-300
-                     transform hover:scale-105 active:scale-95
-                     font-medium text-lg"
-            >
-              Connect Wallet
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-6 animate-slideUp">
-            <h2 className="text-2xl font-semibold text-gray-800">
-              What would you like to do?
-            </h2>
-            <textarea
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Enter your prompt..."
-              className="w-full p-4 border border-gray-300 rounded-xl
-                     text-gray-800 bg-white min-h-[120px]
-                     focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                     transition-all duration-300 resize-none"
-              disabled={isProcessing}
-            />
-  
-            {/* Example Prompts */}
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-gray-600">Example prompts:</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {EXAMPLE_PROMPTS.map((example, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setPrompt(example)}
-                    className="text-left text-blue-500 hover:text-blue-700 
-                           p-2 rounded-lg hover:bg-blue-50
-                           transition-all duration-300"
-                  >
-                    {example}
-                  </button>
-                ))}
-              </div>
-            </div>
-  
-            <button
-              onClick={handleExecute}
-              disabled={isProcessing}
-              className={`w-full py-4 px-6 rounded-xl font-medium text-lg
-                     transition-all duration-300
-                     transform hover:scale-105 active:scale-95
-                     ${
-                       isProcessing
-                         ? "bg-gray-400 cursor-not-allowed"
-                         : "bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white"
-                     }`}
-            >
-              {isProcessing ? (
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  <span>Processing...</span>
-                </div>
-              ) : (
-                "Execute"
-              )}
-            </button>
-          </div>
-        )}
+    </div>
       </div>
+  
+      {/* Footer */}
+      <footer className="fixed bottom-0 left-0 right-0 bg-white text-center p-2 border-t border-gray-200 shadow-lg text-sm text-gray-600">
+  Powered by Brian AI
+</footer>
     </div>
   );
+  
 };
 
 export default PromptInput;

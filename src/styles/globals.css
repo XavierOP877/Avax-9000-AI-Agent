@@ -9,6 +9,16 @@
   --background-end-rgb: 255, 255, 255;
 }
 
+html, body {
+  height: 100%;
+  overflow: auto;
+}
+
+#root {
+  height: 100%;
+  overflow-y: auto;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(

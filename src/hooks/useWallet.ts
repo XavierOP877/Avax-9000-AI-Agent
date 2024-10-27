@@ -48,7 +48,7 @@ export const useWallet = () => {
   };
 
   const updateBalance = async () => {
-    if (walletState.wallet && walletState.connected) {
+    if (walletState.wallet?.provider && walletState.connected) {
       const balance = await walletState.wallet.provider.getBalance(walletState.address);
       setWalletState(prev => ({
         ...prev,
@@ -56,7 +56,6 @@ export const useWallet = () => {
       }));
     }
   };
-
   useEffect(() => {
     const interval = setInterval(updateBalance, 30000); 
     return () => clearInterval(interval);

@@ -1,5 +1,5 @@
+import React from 'react';
 import { Toaster } from 'react-hot-toast';
-import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import '../styles/globals.css';
 
@@ -10,12 +10,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <div className="min-h-screen flex flex-col">
-          {children}
-          <Footer />
-        </div>
-        <Toaster position="top-right" />
+      <body className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col antialiased">
+        <main className="flex-grow container mx-auto px-4 py-8 md:px-6 lg:px-8">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            {children}
+          </div>
+        </main>
+        <Footer />
+        <Toaster 
+          position="top-right" 
+          toastOptions={{
+            className: 'shadow-lg',
+            style: {
+              borderRadius: '8px',
+              background: '#333',
+              color: '#fff',
+            },
+          }}
+        />
       </body>
     </html>
   );
