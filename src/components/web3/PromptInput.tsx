@@ -297,7 +297,7 @@ export const PromptInput: React.FC = () => {
           /transfer ([\d.]+) avax to (0x[a-fA-F0-9]{40})/i
         );
         if (match) {
-          const [fullMatch, amount, toAddress] = match;
+          const [_, amount, toAddress] = match;
           const transaction = {
             to: toAddress,
             value: ethers.parseEther(amount),
