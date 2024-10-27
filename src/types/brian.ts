@@ -9,12 +9,13 @@ export interface BrianTransactionRequest extends BrianRequestBase {
   network: string;
   parameters?: {
     slippage?: string;
-    [key: string]: any;
+    [key: string]: string | number | boolean | undefined;  // More specific than 'any'
   };
 }
 
 export interface BrianKnowledgeRequest extends BrianRequestBase {
-  // Additional knowledge-specific fields if needed
+  // If there are no additional fields needed, we can add a discriminator
+  type: 'knowledge';
 }
 
 export interface Transaction {

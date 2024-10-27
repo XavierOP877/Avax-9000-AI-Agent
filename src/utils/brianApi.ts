@@ -1,19 +1,21 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { Transaction } from '../types/brian';  // Import from previous file
 
 export interface BrianApiResponse {
-  transaction?: {
-    to: string;
-    value?: string;
-    data?: string;
-    gasLimit?: string;
-  };
+  transaction?: Transaction;
   message?: string;
   error?: string;
 }
 
+// Define the structure of the error response
+interface ErrorResponse {
+  error?: string;
+  message?: string;
+}
+
 export interface BrianApiError {
   error: string;
-  details?: any;
+  details?: Record<string, unknown>;
 }
 
 export const processBrianPrompt = async (prompt: string): Promise<BrianApiResponse> => {
@@ -35,13 +37,15 @@ export const processBrianPrompt = async (prompt: string): Promise<BrianApiRespon
     console.log('Brian API Response:', response.data);
     return response.data;
     
-  } catch (error: any) {
-    console.error('Brian API Error:', error.response?.data || error.message);
+  } catch (error) {
+    console.error('Brian API Error:', (error as AxiosError<ErrorResponse>).response?.data || (error as Error).message);
     
-    const errorMessage = error.response?.data?.error || 
-                        error.response?.data?.message || 
-                        error.message || 
-                        'Failed to process request';
+    const axiosError = error as AxiosError<ErrorResponse>;
+    const errorMessage = 
+      axiosError.response?.data?.error || 
+      axiosError.response?.data?.message || 
+      (error as Error).message || 
+      'Failed to process request';
                         
     throw new Error(errorMessage);
   }
