@@ -42,7 +42,7 @@ Process commands like:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/defi-ai-assistant.git
+git clone https://github.com/XavierOP877/Avax-9000-AI-Agent.git
 cd defi-ai-assistant
 ```
 
@@ -122,8 +122,6 @@ WAVAX_ADDRESS = "0xd00ae08403B9bbb9124bB305C09058E32C39A48c"
 - Never use a mainnet private key
 - This is a testnet application
 - Keep your Brian AI API key secure
-- Review transactions before confirming
-- Check gas fees and slippage settings
 
 ## 🤝 Contributing
 
@@ -135,7 +133,7 @@ WAVAX_ADDRESS = "0xd00ae08403B9bbb9124bB305C09058E32C39A48c"
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
