@@ -145,13 +145,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 - Brian AI for natural language processing
 - The DeFi community for inspiration
 
-## 📞 Support
-
-For support, please:
-- Open a GitHub issue
-- Join our Discord community
-- Check the documentation
-
 ---
 
 **Note**: This is a testnet application. Do not use real private keys or send actual transactions without proper testing and understanding of the risks involved.
