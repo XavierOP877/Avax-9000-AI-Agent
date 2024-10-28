@@ -70,8 +70,7 @@ yarn dev
 
 ### Getting Testnet Tokens
 
-1. Get Testnet AVAX from the [Avalanche Faucet](https://faucet.avax.network/)
-2. Get Testnet USDC from the [Trader Joe Testnet Faucet](https://testnet.traderjoexyz.com/faucet)
+Get Testnet AVAX from the [Avalanche Faucet](https://faucet.avax.network/)
 
 ## 🔧 Configuration
 
