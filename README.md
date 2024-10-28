@@ -43,7 +43,7 @@ Process commands like:
 1. Clone the repository:
 ```bash
 git clone https://github.com/XavierOP877/Avax-9000-AI-Agent.git
-cd defi-ai-assistant
+cd avax-9000-ai-agent
 ```
 
 2. Install dependencies:
@@ -134,13 +134,6 @@ WAVAX_ADDRESS = "0xd00ae08403B9bbb9124bB305C09058E32C39A48c"
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Trader Joe DEX for swap functionality
-- Avalanche for the testnet infrastructure
-- Brian AI for natural language processing
-- The DeFi community for inspiration
 
 ---
 
