@@ -1,4 +1,4 @@
-# DeFi AI Assistant - Natural Language Crypto Trading Interface
+# Avax-9000-AI-Agent
 
 A modern DeFi application that allows users to interact with the Avalanche blockchain using natural language commands. Powered by Brian AI, this application simplifies cryptocurrency transactions by converting plain English instructions into blockchain operations.
 
