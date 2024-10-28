@@ -10,7 +10,7 @@ export const Header: React.FC<HeaderProps> = ({ isConnected, onDisconnect }) => 
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-bold">
-              <span className="text-blue-400">9000 Bounty</span>
+              <span className="text-blue-400">Avax-9000-AI-Agent</span>
             </h1>
           </div>
           
