@@ -220,13 +220,26 @@ export const Web3Container: React.FC = () => {
       const provider = wallet.provider!; // Non-null assertion since we checked wallet exists
 
       const conditionalSwapMatch = prompt.match(
-        /swap ([\d.]+) avax to usdc when avax is (above|below) ([\d.]+)/i
+        /swap ([\d.]+) avax (?:to usdc )?when avax is (above|below) ([\d.]+)/i
       );
       
       if (conditionalSwapMatch) {
         const [, amount, operator, price] = conditionalSwapMatch;
+        const currentPrice = await getAVAXPrice(provider);
+  
+        // Add immediate price check before setting up monitoring
+        const conditionMet = operator.toLowerCase() === 'above' 
+          ? currentPrice > Number(price)
+          : currentPrice < Number(price);
+  
+        if (conditionMet) {
+          toast.error(`Cannot set conditional swap: Current AVAX price ($${currentPrice}) is already ${operator} $${price}`, { id: toastId });
+          setIsProcessing(false);
+          return;
+        }
+  
         await setupConditionalSwap(amount, Number(price), operator as 'above' | 'below');
-        toast.success("Conditional swap setup complete", { id: toastId });
+        toast.success(`Conditional swap setup complete. Will execute when AVAX price is ${operator} $${price} (Current: $${currentPrice})`, { id: toastId });
         setPrompt("");
         return;
       }
@@ -294,7 +307,7 @@ export const Web3Container: React.FC = () => {
       }
       // Handle regular swaps
       else if (prompt.toLowerCase().includes("swap")) {
-        const match = prompt.match(/swap ([\d.]+) avax/i);
+        const match = prompt.match(/^swap ([\d.]+) avax( to usdc)?$/i);
         if (match) {
           const [, amount] = match;
           const amountIn = ethers.parseEther(amount);
