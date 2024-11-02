@@ -397,7 +397,7 @@ export const Web3Container: React.FC = () => {
 
       {/* Footer with subtle glow */}
       <footer className="fixed bottom-0 left-0 right-0 bg-slate-800/50 backdrop-blur-md border-t border-blue-500/20 text-center py-2 text-sm text-blue-200/70 z-30">
-        Powered by Brian AI
+        Powered by Avalanche
       </footer>
     </div>
   );
