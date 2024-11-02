@@ -11,7 +11,6 @@ interface HistoryDisplayProps {
 export const HistoryDisplay: React.FC<HistoryDisplayProps> = ({
   history,
   pendingSwaps,
-  setPendingSwaps,
 }) => {
   if (history.length === 0 && pendingSwaps.length === 0) return null;
 

@@ -1,4 +1,4 @@
-# Avax-9000-AI-Agent
+# NexusAI
 
 A modern DeFi application that allows users to interact with the Avalanche blockchain using natural language commands. Powered by Brian AI, this application simplifies cryptocurrency transactions by converting plain English instructions into blockchain operations.
 
@@ -20,8 +20,7 @@ A modern DeFi application that allows users to interact with the Avalanche block
 Process commands like:
 - "Transfer 0.1 AVAX to 0x..."
 - "Swap 1 AVAX for USDC using Trader Joe"
-- "Show my balances"
-- "Show transaction history"
+- "Swap 1 AVAX to USDC when AVAX is below 40"
 
 ### User Interface
 - Clean, modern design with Tailwind CSS
