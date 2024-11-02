@@ -1,342 +1,106 @@
-/* src/app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 245, 247, 250;
-  --background-end-rgb: 255, 255, 255;
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-html, body {
+/* Base theme */
+html, body, #__next {
+  @apply bg-slate-900;
+  width: 100%;
   height: 100%;
-  overflow: auto;
-}
-
-#root {
-  height: 100%;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-    to bottom,
-    rgb(var(--background-start-rgb)),
-    rgb(var(--background-end-rgb))
-  );
+  @apply text-blue-50;
+  position: relative;
   min-height: 100vh;
+  min-width: 100vw;
 }
 
-@layer base {
-  h1 {
-    @apply text-4xl font-bold mb-4;
-  }
-  
-  h2 {
-    @apply text-2xl font-semibold mb-3;
-  }
-  
-  h3 {
-    @apply text-xl font-medium mb-2;
-  }
-
-  a {
-    @apply text-blue-600 hover:text-blue-800 transition-colors;
-  }
+/* AI Theme Components */
+.ai-container {
+  background: linear-gradient(to bottom right, rgba(51, 65, 85, 0.5), rgba(15, 23, 42, 0.5));
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+  backdrop-filter: blur(12px);
 }
 
-@layer components {
-  .card {
-    @apply bg-white rounded-lg shadow-md p-6;
-  }
+.ai-card {
+  @apply rounded-xl p-6 transition-all duration-300;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+}
 
-  .input-base {
-    @apply w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all;
-  }
+.ai-card:hover {
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.15);
+}
 
-  .btn {
-    @apply px-4 py-2 rounded-md font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
-  }
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
 
-  .btn-primary {
-    @apply btn bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700;
-  }
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(51, 65, 85, 0.3);
+  border-radius: 8px;
+}
 
-  .btn-secondary {
-    @apply btn bg-gray-200 text-gray-800 hover:bg-gray-300 active:bg-gray-400;
-  }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, rgba(59, 130, 246, 0.5), rgba(147, 51, 234, 0.5));
+  border-radius: 8px;
+}
 
-  .btn-danger {
-    @apply btn bg-red-500 text-white hover:bg-red-600 active:bg-red-700;
-  }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, rgba(59, 130, 246, 0.7), rgba(147, 51, 234, 0.7));
+}
 
-  .form-group {
-    @apply space-y-2 mb-4;
+/* Animations */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
   }
-
-  .form-label {
-    @apply block text-sm font-medium text-gray-700;
-  }
-
-  .form-input {
-    @apply input-base;
-  }
-
-  .form-textarea {
-    @apply input-base min-h-[100px] resize-y;
+  50% {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
   }
 }
 
-@layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500;
-  }
-
-  .glass {
-    @apply bg-white bg-opacity-20 backdrop-blur-lg rounded-lg border border-white border-opacity-20;
-  }
-
-  .transition-smooth {
-    @apply transition-all duration-300 ease-in-out;
-  }
+.glow-effect {
+  animation: glow 3s ease-in-out infinite;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Input styling */
+input, textarea {
+  @apply bg-slate-800/60 text-blue-100 border border-blue-500/20
+         rounded-xl px-4 py-2
+         focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30
+         transition-all duration-300
+         placeholder-blue-300/30;
+  backdrop-filter: blur(12px);
 }
 
-::-webkit-scrollbar-track {
-  background: rgb(var(--background-start-rgb));
-  border-radius: 4px;
+/* Button styling */
+.btn {
+  @apply rounded-xl font-medium transition-all duration-300 
+         disabled:opacity-50 disabled:cursor-not-allowed
+         backdrop-blur-md;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+.btn-primary {
+  @apply btn bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white
+         hover:from-blue-500/90 hover:to-purple-500/90
+         border border-blue-400/20
+         shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #666;
-}
-
-/* Loading animation */
-.loading {
-  @apply inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite];
-}
-
-/* Toast customization */
-.toast {
-  @apply rounded-lg shadow-lg p-4 mb-2;
-}
-
-.toast-success {
-  @apply bg-green-500 text-white;
-}
-
-.toast-error {
-  @apply bg-red-500 text-white;
-}
-
-.toast-info {
-  @apply bg-blue-500 text-white;
-}
-
-/* Animation utilities */
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-in;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.3s ease-out;
-}
-
-.animate-slide-down {
-  animation: slideDown 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideDown {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Responsive typography */
-@screen sm {
-  h1 {
-    @apply text-5xl;
-  }
-  
-  h2 {
-    @apply text-3xl;
-  }
-  
-  h3 {
-    @apply text-2xl;
-  }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 30, 30, 30;
-  }
-
-  .card {
-    @apply bg-gray-800 text-white;
-  }
-
-  .input-base {
-    @apply bg-gray-700 border-gray-600 text-white;
-  }
-
-  .btn-secondary {
-    @apply bg-gray-700 text-white hover:bg-gray-600;
-  }
-
-  .form-label {
-    @apply text-gray-300;
-  }
-}
-
-/* Print styles */
-@media print {
-  .no-print {
-    display: none;
-  }
-}
-
-/* Add these to your src/app/globals.css */
-@layer components {
-    .btn-execute {
-      @apply w-full py-3 px-4 rounded-md font-medium
-             transition-all duration-200 
-             focus:outline-none focus:ring-2 focus:ring-offset-2;
-    }
-  
-    .btn-execute:not(:disabled) {
-      @apply bg-blue-500 text-white 
-             hover:bg-blue-600 
-             active:bg-blue-700
-             cursor-pointer;
-    }
-  
-    .btn-execute:disabled {
-      @apply bg-gray-400 text-gray-200 
-             cursor-not-allowed;
-    }
-  }
-  
-  /* Update input/textarea styles */
-  textarea, input {
-    @apply bg-white text-gray-800
-           border border-gray-300 
-           focus:ring-2 focus:ring-blue-500 
-           focus:border-transparent;
-  }
-
-  /* Add to your globals.css */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@layer components {
-  .animate-fadeIn {
-    animation: fadeIn 0.5s ease-out;
-  }
-
-  .animate-slideUp {
-    animation: slideUp 0.5s ease-out;
-  }
-}
-
-/* Card hover effects */
-.card-hover {
-  @apply transition-all duration-300 hover:shadow-lg;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #666;
-}
-
-body {
-  overflow: hidden; /* Prevents double scrolling */
-}
-
-.overflow-y-auto {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
-}
-
-/* Optional: Add a fade effect at the bottom of the results */
-.overflow-y-auto::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background: linear-gradient(to top, white, transparent);
-  pointer-events: none;
+.btn-danger {
+  @apply btn bg-gradient-to-r from-red-500/80 to-pink-500/80 text-white
+         hover:from-red-500/90 hover:to-pink-500/90
+         border border-red-400/20
+         shadow-lg shadow-red-500/25 hover:shadow-red-500/40;
 }

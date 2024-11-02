@@ -8,7 +8,7 @@ export const Footer = () => {
           <div className="flex items-center space-x-2">
             <span className="font-semibold text-gray-700">Powered by</span>
             <span className="font-bold text-blue-600 hover:text-blue-700 transition-colors">
-              Brian AI
+              Avalanche
             </span>
             </div>
             </div>

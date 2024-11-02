@@ -25,6 +25,10 @@ module.exports = {
       animation: {
         'fadeIn': 'fadeIn 0.3s ease-in',
         'slideUp': 'slideUp 0.3s ease-out',
+        'spin-slow': 'spin 8s linear infinite',
+        'shimmer': 'shimmer 2s infinite',
+        'float': 'float 3s ease-in-out infinite',
+        'gradient': 'gradient 3s ease infinite',
       },
       keyframes: {
         fadeIn: {
@@ -34,6 +38,18 @@ module.exports = {
         slideUp: {
           '0%': { transform: 'translateY(20px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        gradient: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
         },
       }
     },
