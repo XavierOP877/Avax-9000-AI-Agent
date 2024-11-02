@@ -41,7 +41,7 @@ Process commands like:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/XavierOP877/Avax-9000-AI-Agent.git
+git clone https://github.com/XavierOP877/NexusAI.git
 cd avax-9000-ai-agent
 ```
 
