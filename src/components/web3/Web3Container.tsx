@@ -259,28 +259,37 @@ export const Web3Container: React.FC = () => {
       }
 
       // Handle transfers
-      if (prompt.toLowerCase().includes("transfer")) {
-        const match = prompt.match(/(transfer | send) ([\d.]+) avax to (0x[a-fA-F0-9]{40})/i);
-        if (match) {
-          const [, amount, toAddress] = match;
-          const transaction = {
-            to: toAddress,
-            value: ethers.parseEther(amount),
-            gasLimit: ethers.toBigInt("21000"),
-          };
+      const transferMatch = prompt.match(
+        /(transfer|send) ([\d.]+) avax to (0x[a-fA-F0-9]{40})/i
+      );
 
-          const tx = await wallet.sendTransaction(transaction);
-          const receipt = await tx.wait();
-          if (receipt) {
-            toast.success(`Transfer confirmed! Hash: ${receipt.hash}`, { id: toastId });
-            setHistory(prev => [...prev, {
+      if (transferMatch) {
+        const [, action, amount, toAddress] = transferMatch;
+        const transaction = {
+          to: toAddress,
+          value: ethers.parseEther(amount),
+          gasLimit: ethers.toBigInt("21000"),
+        };
+
+        const tx = await wallet.sendTransaction(transaction);
+        const receipt = await tx.wait();
+        
+        if (receipt) {
+          toast.success(`${action.charAt(0).toUpperCase() + action.slice(1)} confirmed! Hash: ${receipt.hash}`, {
+            id: toastId,
+          });
+          setHistory((prev) => [
+            ...prev,
+            {
               type: "transfer",
               hash: receipt.hash,
-              description: `Transfer ${amount} AVAX to ${toAddress}`,
+              description: `${action.charAt(0).toUpperCase() + action.slice(1)} ${amount} AVAX to ${toAddress}`,
               timestamp: new Date().toISOString(),
               status: "success",
-            }]);
-          }
+            },
+          ]);
+          setPrompt("");
+          return;
         }
       }
       // Handle regular swaps
