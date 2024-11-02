@@ -260,7 +260,7 @@ export const Web3Container: React.FC = () => {
 
       // Handle transfers
       if (prompt.toLowerCase().includes("transfer")) {
-        const match = prompt.match(/transfer ([\d.]+) avax to (0x[a-fA-F0-9]{40})/i);
+        const match = prompt.match(/(transfer | send) ([\d.]+) avax to (0x[a-fA-F0-9]{40})/i);
         if (match) {
           const [, amount, toAddress] = match;
           const transaction = {
