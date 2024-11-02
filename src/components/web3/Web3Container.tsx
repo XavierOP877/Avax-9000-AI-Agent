@@ -307,7 +307,7 @@ export const Web3Container: React.FC = () => {
       }
       // Handle regular swaps
       else if (prompt.toLowerCase().includes("swap")) {
-        const match = prompt.match(/^swap ([\d.]+) avax( to usdc)?$/i);
+        const match = prompt.match(/^swap ([\d.]+) avax (to|for) usdc(?: using trader joe)?$/i);
         if (match) {
           const [, amount] = match;
           const amountIn = ethers.parseEther(amount);

@@ -41,6 +41,42 @@ export const HistoryDisplay: React.FC<HistoryDisplayProps> = ({
               >
                 <div className="ai-card border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-xl">
                   {/* ...rest of the swap content... */}
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium text-white">
+                        Conditional Swap Monitor
+                      </h3>
+                      <p className="text-slate-300 mt-1">
+                        Swap {swap.amount} AVAX to USDC
+                      </p>
+                      <p className="text-slate-300">
+                        Will execute when AVAX price is {swap.operator} ${swap.targetPrice}
+                      </p>
+                      {swap.currentPrice !== undefined && (
+                        <p className="text-slate-300">
+                          Current Price: ${swap.currentPrice.toFixed(2)}
+                        </p>
+                      )}
+                      <div className="flex items-center mt-2 text-sm text-slate-400">
+                        <span className="flex items-center">
+                          <span className="relative flex h-3 w-3 mr-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-yellow-500"></span>
+                          </span>
+                          Monitoring price...
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-2">
+                        Last checked: {new Date(swap.lastChecked).toLocaleString()}
+                      </p>
+                      {swap.error && (
+                        <p className="text-xs text-red-400 mt-2">
+                          Error: {swap.error}
+                        </p>
+                      )}
+                    </div>
+                    
+                  </div>
                 </div>
               </motion.div>
             ))}

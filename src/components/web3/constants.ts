@@ -1,8 +1,7 @@
 export const EXAMPLE_PROMPTS = [
     "Transfer 0.1 AVAX to 0x...",
     "Swap 1 AVAX for USDC using Trader Joe",
-    "Swap 1 AVAX to USDC when AVAX is below 40",
-    "Tweet about my latest trade"
+    "Swap 1 AVAX to USDC when AVAX is above 40"
   ];
   
   export const TRADERJOE_ROUTER = "0xd7f655E3376cE2D7A2b08fF01Eb3B1023191A901";
